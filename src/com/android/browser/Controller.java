@@ -1442,8 +1442,20 @@ public class Controller
                 }
                 // otherwise fall through to handle image part
             case WebView.HitTestResult.IMAGE_TYPE:
+                MenuItem shareItem = menu.findItem(R.id.share_link_context_menu_id);
+                shareItem.setVisible(type == WebView.HitTestResult.IMAGE_TYPE);
                 if (type == WebView.HitTestResult.IMAGE_TYPE) {
                     menu.setHeaderTitle(extra);
+                    shareItem.setOnMenuItemClickListener(
+                            new MenuItem.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    sharePage(mActivity, null, extra, null,
+                                    null);
+                                    return true;
+                                }
+                            }
+                        );
                 }
                 menu.findItem(R.id.view_image_context_menu_id)
                         .setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -2392,6 +2404,7 @@ public class Controller
         Tab tab = null;
         if (mTabControl.canCreateNewTab()) {
             tab = mTabControl.createNewTab(incognito);
+            tab.setIsNewTab(true);
             addTab(tab);
             if (setActive) {
                 setActiveTab(tab);
